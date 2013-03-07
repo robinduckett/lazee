@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Lazee</title>
+        <link rel="stylesheet" href="styles/bootstrap.css"/>
+        <link rel="stylesheet" href="styles/lazee.css"/>
+
+        <script type="text/javascript" src="scripts/vendor/jquery.js"></script>
+        <script type="text/javascript" src="scripts/vendor/underscore.js"></script>
+        <script type="text/javascript" src="scripts/vendor/backbone.js"></script>
+        <script type="text/javascript" src="scripts/vendor/bootstrap.js"></script>
+
+        <script type="text/javascript" src="scripts/template.js"></script>
+
+        <script type="text/javascript">
+            $(function() {
+                var templates = [
+                    'list.html',
+                    'listitem.html'
+                ];
+
+                var template = new Template();
+
+                templates.forEach(function(file) {
+                    template.add(file.replace(".html", ""), file);
+                });
+
+                template.load(function() {
+                    var videos = [{
+                        shortname: "argo",
+                        url: "aaaaa/argo0",
+                        thumbnail: "images/test.png",
+                        title: "Argo",
+                        desc: "A dramatization of the 1980 joint CIA-Canadian secret operation to extract six fugitive American diplomatic personnel out of revolutionary Iran."
+                    },{
+                        shortname: "role.models",
+                        url: "aaaab/role.models",
+                        thumbnail: "images/test2.png",
+                        desc: "Prepare yourself for the most irreverent and funny comedy that brings new meaning to juvenile delinquency! As the world's least-likely mentors, Danny (Paul Rudd) & Wheeler (Seann William Scott) must put aside their selfish, sarcastic and party-driven ways in order to give two odd, foul-mouthed kids invaluable wisdom about life, love and heavy metal.",
+                        title: "Role Models"
+                    }];
+
+                    var listItem = _.template($('#listitem').html());
+
+                    var listItems = [];
+
+                    videos.forEach(function(video) {
+                        listItems.push(listItem(video));
+                    });
+
+                    var list = _.template($('#list').html());
+
+                    $('#content').empty();
+                    $('#content').append(list({list: listItems.join("\n")}));
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Lazee</h1>
+
+            <div id="content">
+                You must have Javascript enabled to enjoy Lazee.
+            </div>
+        </div>
+    </body>
+</html>
