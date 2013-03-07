@@ -1,0 +1,19 @@
+{
+  "name": "encoder",
+  "version": "0.0.1",
+  "description": "ERROR: No README.md file found!",
+  "main": "bin/encoder",
+  "dependencies": {
+    "dnode": "~1.0.5",
+    "async": "~0.2.6",
+    "mkdirp": "~0.3.5",
+    "nicetime": "0.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}

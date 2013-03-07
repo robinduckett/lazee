@@ -1,1 +1,13 @@
 #!/usr/bin/env coffee
+
+dnode = require('dnode')
+
+dnode.connect(5001)
+
+d.on 'remote', (remote) ->
+    remote.process
+        id: '001'
+        type: 'unrar'
+        path: '/Users/robin/Downloads/Wreck-It.Ralph.2012.DVDRip.XviD-RiPS/wreck-it.ralph.dvdrip.xvid.rar'
+        dest: '../tmp/wreck-it.ralph.dvdrip.xvid'
+        created: new Date()

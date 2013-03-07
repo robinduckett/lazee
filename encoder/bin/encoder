@@ -1,0 +1,10 @@
+#!/usr/bin/env coffee
+
+queue= require('../lib/queue')
+dnode = require('dnode')
+
+server = dnode
+    process: (job) ->
+        queue.process(job)
+        
+server.listen(5001)
