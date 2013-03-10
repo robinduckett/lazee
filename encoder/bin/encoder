@@ -7,4 +7,9 @@ server = dnode
     process: (job) ->
         queue.process(job)
         
+    getJobs: (cb) ->
+        jobs = queue.jobs
+            
+        cb(jobs)
+        
 server.listen(5001)

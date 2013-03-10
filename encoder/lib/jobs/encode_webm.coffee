@@ -4,27 +4,28 @@ path = require('path')
 Encoder = require('./encoder')
 
 class WebMEncode extends Encoder
-    do: (@job, @callback) ->
-        console.log "webm"
+    do: (@job, @callback) ->        
         super(@job, @callback)
     
-    encode: () =>
+    encode: () =>        
+        @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".webm"
+        
         ffmpeg = new Ffmpeg(
             source: @currentFile
             timeout: 3000
-        ).withVideoBitrate("1024k")
+        ).withVideoBitrate("700k")
          .withVideoCodec("libvpx")
          .withAudioCodec("libvorbis")
-         .withAudioBitrate("128k")
+         .withAudioBitrate("192k")
          .withAudioChannels(2)
          .toFormat("webm")
-         .addOption("-t", "00:5:00")
+         .addOption("-t", "00:00:31")
          .addOption("-ar", "48000")
-         .saveToFile(path.join(@destination, path.basename(@currentFile, path.extname(@currentFile))) + ".webm", (stdout, stderr) =>
-            console.log stdout
-            console.log stderr
-            
+         .onProgress(@progress)
+         .saveToFile(path.join(@destination, @filename), (stdout, stderr) =>            
             @job.done = true
+            @job.stdout = stdout
+            @job.stderr = stderr
             @callback(null, null, @job)
         )
         

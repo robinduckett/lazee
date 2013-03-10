@@ -5,27 +5,29 @@ Encoder = require('./encoder')
 
 class H264Encode extends Encoder
     do: (@job, @callback) ->
-        console.log "h264"
         super(@job, @callback)
                 
     encode: () =>
+        @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".mp4"
+        
         ffmpeg = new Ffmpeg(
             source: @currentFile
             timeout: 3000
-        ).withVideoBitrate("1024k")
+        ).withVideoBitrate("700k")
          .withVideoCodec("libx264")
          .withAudioCodec("libfaac")
-         .withAudioBitrate("128k")
+         .withAudioBitrate("192k")
          .withAudioChannels(2)
          .toFormat("mp4")
-         .addOption("-t", "00:5:00")
+         .addOption("-t", "00:00:31")
          .addOption("-ar", "48000")
-         .saveToFile(path.join(@destination, path.basename(@currentFile, path.extname(@currentFile))) + ".mp4", (stdout, stderr) =>
-            console.log stdout
-            console.log stderr
-            
+         .addOption("-vpre", "baseline")
+         .onProgress(@progress)
+         .saveToFile(path.join(@destination, @filename), (stdout, stderr) =>
             @job.done = true
-            @callback(null, null, @job)
+            @job.stdout = stdout
+            @job.stderr = stderr
+            if stderr then @callback(stderr, null, @job) else @callback(null, null, @job)
         )
         
 module.exports = H264Encode

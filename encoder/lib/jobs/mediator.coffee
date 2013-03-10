@@ -12,20 +12,25 @@ class Mediator
             
     scanAndQueue: (file) ->
         extension = file.substring file.lastIndexOf(".")
+        
+        job = JSON.parse(JSON.stringify(@job))
+        job.queue = @job.queue
                 
         switch extension
             when ".avi", ".mkv", ".ogg", ".webm", ".flv"
-                if !@job.encode_files then @job.encode_files = []
+                if !job.encode_files then job.encode_files = []
                 
-                if @job.encode_files.indexOf(file) is -1
-                    @job.encode_files.push file
+                if job.encode_files.indexOf(file) is -1
+                    job.encode_files.push file
                     
-                @job.type = "encode"
+                job.type = "encode"
             when ".rar"
-                @job.type = "unrar"
+                job.type = "unrar"
             else
-                @job.done = true
+                job.done = true
                 
-        @job.queue.process @job
+        delete job.id
+                
+        @job.queue.process job
         
 module.exports = Mediator

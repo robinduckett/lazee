@@ -11,4 +11,15 @@ d.on 'remote', (remote) ->
         dest: '/Users/robin/dev/lazee/tmp/wreck-it.ralph.dvdrip.xvid'
         created: new Date()
         
-    process.exit()
+    setTimeout(() ->
+        remote.getJobs (jobs) ->
+            console.log('jobs: ')
+            console.log(jobs);
+    , 78*1000)
+    
+    start = 80
+    
+    si = setInterval(() ->
+        console.log start--
+        if start < 0 then process.exit()
+    , 1000)

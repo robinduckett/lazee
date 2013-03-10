@@ -10,27 +10,34 @@ class Unrar
         
         unrar = spawn('unrar', ['e', '-y', @job.path, @job.dest])
         
+        stdout = ''
+        stderr = ''
         output = ''
         
         unrar.stdout.setEncoding 'utf8'
         unrar.stdout.on 'data', (data) ->
+            stdout += data
             output += data
             process.stdout.write data
             
         unrar.stderr.setEncoding 'utf8'
         unrar.stderr.on 'data', (data) ->
+            stderr += data
             output += data
             process.stdout.write data
             
         unrar.on 'exit', (code) =>
             console.log "Code: " + code
-            @job.output = output
+            @job.exit_code = code
+            @job.stdout = stdout
+            @job.stderr = stderr
+            
             @check output
             
             if code isnt 0
-                @callback(output, null)
+                @callback(stdout, null)
             else
-                @callback(null, output, @job)
+                @callback(null, stdout, @job)
                 
     check: (output) ->
         lines = output.split(/\n/g)

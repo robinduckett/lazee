@@ -7,17 +7,24 @@ fs = require('fs')
 class Encode
     constructor: () ->
     
-    do: (@job, @callback) ->        
-       h264_job = JSON.parse(JSON.stringify(@job))
-       webm_job = JSON.parse(JSON.stringify(@job))
+    do: (@job, @callback) ->
+                    
+        h264_job = JSON.parse(JSON.stringify(@job))
+        webm_job = JSON.parse(JSON.stringify(@job))
        
-       delete h264_job.id
-       delete webm_job.id
+        delete h264_job.id
+        delete webm_job.id
+        
+        h264_job.stdout = ''
+        webm_job.stderr = ''
+        
+        screenshot_job.type 'screenshot'
+        @job.queue.process screenshot
        
-       h264_job.type = 'encode_h264'   
-       @job.queue.process h264_job
+        h264_job.type = 'encode_h264'   
+        @job.queue.process h264_job
        
-       webm_job.type = 'encode_webm'
-       @job.queue.process webm_job
+        webm_job.type = 'encode_webm'
+        @job.queue.process webm_job        
         
 module.exports = Encode
