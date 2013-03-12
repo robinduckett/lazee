@@ -1,0 +1,14 @@
+<%- block('title', ' Administration') %>
+
+<legend>Authentication <small> - Login</small></legend>
+        
+<div class="navbar">
+    <div class="navbar-inner">
+        <p class="navbar-text pull-left" style="margin-left: -10px; margin-right: 10px">Login</p>
+        <form class="navbar-form" method="post" action="/admin/login">
+            <input name="username" type="text" class="input-small" placeholder="Username">
+            <input name="password" type="password" class="input-small" placeholder="Password">
+            <button type="submit" class="btn">Sign in</button>
+        </form>
+    </div>
+</div>

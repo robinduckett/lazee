@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Lazee<%- blocks.title %></title>
+        <link rel="stylesheet" href="/styles/bootstrap.css"/>
+        <link rel="stylesheet" href="/styles/lazee.css"/>
+        
+        <%- stylesheets %>
+
+        <script type="text/javascript" src="/scripts/vendor/jquery.js"></script>
+        <script type="text/javascript" src="/scripts/vendor/underscore.js"></script>
+        <script type="text/javascript" src="/scripts/vendor/backbone.js"></script>
+        <script type="text/javascript" src="/scripts/vendor/bootstrap.js"></script>
+
+        <script type="text/javascript" src="/scripts/template.js"></script>
+        
+        <%- scripts %>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Lazee</h1>
+
+            <div id="content">
+                <% if (session.error) { %>
+                    <div class="alert error">
+                          <strong>Error</strong> <%= session.error %>
+                    </div>
+                <% } %>
+                <%- body %>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,5 @@
+<ul class="fileList">
+<% files.forEach(function(file) { %>
+    <li><%= file.name %> (<%= Math.ceil(file.bytesCompleted / file.length * 100) %>%)</li>
+<% }) %>
+</ul>

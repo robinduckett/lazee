@@ -1,0 +1,15 @@
+<%- block('title', ' Administration | Encoder') %>
+
+<%- script('/scripts/admin/encoder.js') %>
+<%- stylesheet('/styles/admin/encoder.css') %>
+
+<legend>Administration <small> - Encoder</small></legend>
+
+<% active = 'encoder' %>
+<% include nav %>
+
+<div id="jobs">
+    
+</div>
+
+<script id="x_jobs" type="text/json"><%- JSON.stringify(jobs) %></script>

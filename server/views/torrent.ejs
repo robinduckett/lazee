@@ -1,0 +1,21 @@
+<%- block('title', ' Administration | Torrents') %>
+
+<%- script('/scripts/admin/torrents.js') %>
+<%- stylesheet('/styles/admin/torrents.css') %>
+
+<legend>Administration <small> - Torrents</small></legend>
+
+<% active = 'torrents' %>
+<% include nav %>
+
+<input type="hidden" id="transmission_url" value="<%= transmission %>">
+<script type="application/json" id="torrents_json"><%- JSON.stringify(torrents) %></script>
+
+<div class="btn-group">
+  <button id="main" class="btn active">Manage</button>
+  <button id="webui" class="btn">Web UI</button>
+  <button id="tidy" class="btn">Tidy</button>
+</div>
+<br><br>
+<div id="torrents">
+</div>

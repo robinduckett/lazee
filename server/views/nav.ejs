@@ -1,0 +1,15 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <ul class="nav pull-left">
+            <li class="<%= active == 'admin' ? 'active' : '' %>"><a href="/admin">Admin</a></li>
+            <li class="<%= active == 'torrents' ? 'active' : '' %>"><a href="/admin/torrents">Torrents</a></li>
+            <li class="<%= active == 'content' ? 'active' : '' %>"><a href="/admin/content">Content</a></li>
+            <li class="<%= active == 'encoder' ? 'active' : '' %>"><a href="/admin/encoder">Encoder</a></li>
+            <li class="<%= active == 'users' ? 'active' : '' %>"><a href="/admin/users">Users</a></li>
+        </ul>
+        
+        <ul class="nav pull-right">
+            <li><a href="/admin/logout">Logout <%= session.username %></a></li>
+        </ul>
+    </div>
+</div>

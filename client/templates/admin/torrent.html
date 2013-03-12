@@ -1,0 +1,20 @@
+<% function readableFileSize(size) {
+    var units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    var i = 0;
+    while(size >= 1024) {
+        size /= 1024;
+        ++i;
+    }
+    return size.toFixed(1) + ' ' + units[i];
+} %>
+
+<tr id="torrent<%= id %>">
+    <td><%= name.replace(/\.|_/ig, ' ') %></td>
+    <td><%= readableFileSize(rateDownload) %>/s</td>
+    <td><%= readableFileSize(totalSize - leftUntilDone) %></td>
+    <td><%= leftUntilDone > 0 ? 'Downloading' : 'Downloaded' %></td>
+    <td><%= readableFileSize(totalSize) %></td>
+    <td><button class="btn showfiles" data-torrentid="<%= id %>">Show files</button></td>
+    <td><button class="btn encode" data-torrentid="<%= id %>">Encode</button></td>
+</tr>
+<tr id="fileList<%= id %>" class="fileList <%= toggled.indexOf(id) > -1 ? '' : 'collapsed' %>"><td colspan="7"><%= fileList %></td></tr>
