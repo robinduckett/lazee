@@ -9,11 +9,11 @@
         <% if (typeof done == "undefined") {%>
             <% if (typeof progress != "undefined") {%>
             <div class="progress progress-striped active">
-                <div class="bar bar-success" style="width: <%= Math.ceil(progress.percent * 200) %>%"></div>
+                <div class="bar bar-success" style="width: <%= Math.ceil(progress.percent) %>%"></div>
             </div>
             <% } else { %>
                 <div class="progress progress-striped active">
-                    <div class="bar bar-warning" style="width: 100%"></div>
+                    <div class="bar bar-warning active" style="width: 100%"></div>
                 </div>
             <% } %>
         <% } else { %>
@@ -22,8 +22,8 @@
                     <div class="bar bar-success" style="width: 100%"></div>
                 </div>
             <% } else { %>
-                <div class="progress progress-striped">
-                    <div class="bar bar-warning active" style="width: 100%"></div>
+                <div class="progress progress-striped active">
+                    <div class="bar bar-warning active" style="width: <%= Math.ceil(progress.percent) %>%"></div>
                 </div>
             <% } %>
         <% } %>

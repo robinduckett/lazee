@@ -15,7 +15,7 @@ class Queue
         
     addJob: (job) ->
         if job.id
-            for prop, value of job
+            for own prop, value of job
                 if prop isnt "queue"
                     if typeof @jobs["job" + job.id] is "undefined" then @jobs["job" + job.id] = {}
                     
@@ -24,14 +24,44 @@ class Queue
             util.error "Tried to add a job with no Id!"
             
     getJob: (job) ->
-        @jobs["job" + job.id]
+        retJob = @jobs["job" + job.id]
+
+        if typeof retJob is "undefined"
+            @addJob job
+            retJob = @getJob job
+
+        retJob
+
+    getJobs: ->
+        jobs = {}
+
+        for own jobkey, jobvalue of @jobs
+            copyjob = {}
+
+            for own key, value of jobvalue
+                copyjob[key] = value
+
+            delete copyjob.queue
+
+            jobs[jobkey] = copyjob
+
+        jobs
+
+    getCopyJob: (job) ->
+        cjob = @getJob job
+        delete cjob.queue
+
+        rjob = {}
+        for own key, value of cjob
+            rjob[key] = value
+
+        cjob.queue = @
+        rjob
         
     process: (job) ->    
-        if !job.id
+        if typeof job.id is "undefined"
             @id = @id + 1
             job.id = @id
-            
-        @addJob job
                 
         job.queue = @
         @queue.push(job)
@@ -41,7 +71,7 @@ class Queue
             @do @queue.shift()
                 
     do: (job) ->
-        @getJob(job).processing = true
+        job.processing = true
         
         util.log util.format "Processing %s Job", job.type
         
@@ -56,7 +86,7 @@ class Queue
             
             task.do job, @handleTask
         catch e
-            @getJob(job).error = e
+            job.error = e
             util.error "Job error: " + e
             util.error e.stack
             

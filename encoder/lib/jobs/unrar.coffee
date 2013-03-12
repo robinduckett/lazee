@@ -35,9 +35,19 @@ class Unrar
             @check output
             
             @job.old_type = 'unrar'
+            @job.done = true
+
+            job = @job.queue.getCopyJob(@job)
+
+            delete job.path
+            delete job.queue
+            job.type = 'mediator'
+            job.done = false
+
+            @job.queue.process job
             
             if code isnt 0
-                @callback(stdout, null)
+                @callback(stdout, null, @job)
             else
                 @callback(null, stdout, @job)
                 

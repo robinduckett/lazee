@@ -9,10 +9,13 @@ class H264Encode extends Encoder
                 
     encode: () =>
         @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".mp4"
+
+        @job.durationraw = "00:00:31.00"
+        @job.durationsec = 31
         
-        ffmpeg = new Ffmpeg(
+        new Ffmpeg(
             source: @currentFile
-            timeout: 3000
+            timeout: 10800
         ).withVideoBitrate("700k")
          .withVideoCodec("libx264")
          .withAudioCodec("libfaac")
@@ -23,11 +26,6 @@ class H264Encode extends Encoder
          .addOption("-ar", "48000")
          .addOption("-vpre", "baseline")
          .onProgress(@progress)
-         .saveToFile(path.join(@destination, @filename), (stdout, stderr) =>
-            @job.done = true
-            @job.stdout = stdout
-            @job.stderr = stderr
-            if stderr then @callback(stderr, null, @job) else @callback(null, null, @job)
-        )
+         .saveToFile(path.join(@destination, @filename), @saveFileCallback)
         
 module.exports = H264Encode

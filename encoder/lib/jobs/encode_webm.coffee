@@ -9,10 +9,13 @@ class WebMEncode extends Encoder
     
     encode: () =>        
         @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".webm"
-        
-        ffmpeg = new Ffmpeg(
+
+        @job.durationraw = "00:00:31.00"
+        @job.durationsec = 31
+
+        new Ffmpeg(
             source: @currentFile
-            timeout: 3000
+            timeout: 10800
         ).withVideoBitrate("700k")
          .withVideoCodec("libvpx")
          .withAudioCodec("libvorbis")
@@ -22,11 +25,6 @@ class WebMEncode extends Encoder
          .addOption("-t", "00:00:31")
          .addOption("-ar", "48000")
          .onProgress(@progress)
-         .saveToFile(path.join(@destination, @filename), (stdout, stderr) =>            
-            @job.done = true
-            @job.stdout = stdout
-            @job.stderr = stderr
-            @callback(null, null, @job)
-        )
+         .saveToFile(path.join(@destination, @filename), @saveFileCallback)
         
 module.exports = WebMEncode

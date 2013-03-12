@@ -14,9 +14,7 @@ class Mediator
 
         extension = file.substring file.lastIndexOf(".")
 
-        job = @job.queue.getJob(@job)
-
-        console.log job
+        job = @job.queue.getCopyJob(@job)
                 
         switch extension
             when ".avi", ".mkv", ".ogg", ".webm", ".flv"
@@ -24,10 +22,15 @@ class Mediator
                 
                 if job.encode_files.indexOf(file) is -1
                     job.encode_files.push file
-                    
+
+                job.done = false
                 job.type = "encode"
             when ".rar"
                 job.type = "unrar"
+                job.path = file
+                job.done = false
+            else
+                return
 
         delete job.id
 

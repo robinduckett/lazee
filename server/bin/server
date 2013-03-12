@@ -1,4 +1,4 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env coffee --nodejs --debug=5959
 
 dnode = require('dnode')
 express = require('express')
@@ -29,7 +29,7 @@ d.on 'remote', (remote) ->
             next()
             
         app.use app.router
-        app.use express.static path.join(__dirname, '..', '..', 'client')
+        app.use express["static"] path.join(__dirname, '..', '..', 'client')
         app.use express.errorHandler()
         app.set 'encoder', encoder
         

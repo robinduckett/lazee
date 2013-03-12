@@ -1,4 +1,4 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env coffee --nodejs --debug
 
 queue = require('../lib/queue')
 dnode = require('dnode')
@@ -8,7 +8,7 @@ server = dnode
         queue.process(job)
         
     getJobs: (cb) ->
-        jobs = queue.jobs
+        jobs = queue.getJobs()
             
         cb(jobs)
         

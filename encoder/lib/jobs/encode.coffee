@@ -8,21 +8,20 @@ class Encode
     constructor: () ->
     
     do: (@job, @callback) ->
-        
-        h264_job = @job.queue.getJob(@job)
-        webm_job = @job.queue.getJob(@job)
-       
-        delete h264_job.id
-        delete webm_job.id
-        
-        h264_job.stdout = ''
-        webm_job.stderr = ''
-        
-        h264_job.type = 'encode_h264'   
-        @job.queue.process h264_job
-       
-        webm_job.type = 'encode_webm'
-        @job.queue.process webm_job
+
+        encodeFormats = [
+            "h264"
+            "webm"
+        ]
+
+        for format in encodeFormats
+            job = @job.queue.getCopyJob(@job)
+
+            delete job.id
+            job.stdout = job.stderr = ''
+            job.type = "encode_#{format}"
+
+            @job.queue.process job
         
         @job.done = true
         @callback(null, null, @job)
