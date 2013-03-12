@@ -5,16 +5,18 @@ class Mediator
         if @job.files
             for file in @job.files
                 @scanAndQueue file
-            return
             
         if @job.path
             @scanAndQueue @job.path
             
     scanAndQueue: (file) ->
+        console.log "scanning #{file}"
+
         extension = file.substring file.lastIndexOf(".")
-        
-        job = JSON.parse(JSON.stringify(@job))
-        job.queue = @job.queue
+
+        job = @job.queue.getJob(@job)
+
+        console.log job
                 
         switch extension
             when ".avi", ".mkv", ".ogg", ".webm", ".flv"
@@ -26,11 +28,17 @@ class Mediator
                 job.type = "encode"
             when ".rar"
                 job.type = "unrar"
-            else
-                job.done = true
-                
+
         delete job.id
-                
-        @job.queue.process job
+
+        if job.done isnt true
+            @job.queue.process job
+
+        if @job.old_type
+            @job.type = @job.old_type
+
+        @job.done = true
+
+        @callback(null, null, @job)
         
 module.exports = Mediator

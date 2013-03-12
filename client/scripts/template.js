@@ -1,6 +1,7 @@
 function Template(templateDir) {
     this.templateDir = templateDir || "templates";
     this.templates = [];
+    this.rendered = {};
 }
 
 Template.prototype.load = function(complete) {
@@ -12,14 +13,10 @@ Template.prototype.load = function(complete) {
             console.log("Loading " + self.templateDir + '/' + template.path);
 
             $.ajax({
-                url: self.templateDir + '/' + template.path,
+                url: '/' + self.templateDir + '/' + template.path,
                 dataType: 'html',
                 success: function(source) {
-                    template.el = $('<' + 'script type="script/template">' + '<' + '/script>');
-                    template.el.attr('id', template.name);
-                    template.el.html(source);
-
-                    $('head').append(template.el);
+                    self.rendered[template.name] = _.template(source);
                 },
 
                 error: function() {
@@ -52,3 +49,7 @@ Template.prototype.add = function(name, path) {
 
     return this;
 };
+
+Template.prototype.render = function(template, options) {
+    return this.rendered[template](options);
+}

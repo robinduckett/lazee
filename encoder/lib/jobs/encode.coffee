@@ -8,9 +8,9 @@ class Encode
     constructor: () ->
     
     do: (@job, @callback) ->
-                    
-        h264_job = JSON.parse(JSON.stringify(@job))
-        webm_job = JSON.parse(JSON.stringify(@job))
+        
+        h264_job = @job.queue.getJob(@job)
+        webm_job = @job.queue.getJob(@job)
        
         delete h264_job.id
         delete webm_job.id
@@ -18,13 +18,13 @@ class Encode
         h264_job.stdout = ''
         webm_job.stderr = ''
         
-        screenshot_job.type 'screenshot'
-        @job.queue.process screenshot
-       
         h264_job.type = 'encode_h264'   
         @job.queue.process h264_job
        
         webm_job.type = 'encode_webm'
-        @job.queue.process webm_job        
+        @job.queue.process webm_job
+        
+        @job.done = true
+        @callback(null, null, @job)
         
 module.exports = Encode

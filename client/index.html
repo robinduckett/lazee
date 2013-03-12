@@ -40,18 +40,14 @@
                         title: "Role Models"
                     }];
 
-                    var listItem = _.template($('#listitem').html());
-
                     var listItems = [];
 
                     videos.forEach(function(video) {
-                        listItems.push(listItem(video));
+                        listItems.push(template.render('listitem', video));
                     });
 
-                    var list = _.template($('#list').html());
-
                     $('#content').empty();
-                    $('#content').append(list({list: listItems.join("\n")}));
+                    $('#content').append(template.render('list', {list: listItems.join("\n")}));
                 });
             });
         </script>

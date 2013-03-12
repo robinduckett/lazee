@@ -1,25 +1,40 @@
 #!/usr/bin/env coffee
 
 dnode = require('dnode')
+express = require('express')
+http = require('http')
+path = require('path')
 
 d = dnode.connect(5001)
 
 d.on 'remote', (remote) ->
-    remote.process
-        type: 'unrar'
-        path: '/Users/robin/Downloads/Wreck-It.Ralph.2012.DVDRip.XviD-RiPS/wreck-it.ralph.dvdrip.xvid.rar'
-        dest: '/Users/robin/dev/lazee/tmp/wreck-it.ralph.dvdrip.xvid'
-        created: new Date()
+    encoder = remote
+    app = express()
+    
+    app.configure () ->
+        app.set 'port', 4999
+        app.set 'views', path.join(__dirname, '..', 'views')
+        app.set 'view engine', 'ejs'
+        app.set 'layout', 'layout'
+        app.use require('express-partials')()
+        app.use require 'express-blocks'
+        app.use express.favicon(path.join(__dirname, '..', '..', 'client', 'images', 'favicon.ico'))
+        app.use express.bodyParser()
+        app.use express.cookieParser()
+        app.use express.session(secret: 'test')
+        app.use express.methodOverride()
         
-    setTimeout(() ->
-        remote.getJobs (jobs) ->
-            console.log('jobs: ')
-            console.log(jobs);
-    , 78*1000)
+        app.use (req, res, next) ->
+            res.locals.session = req.session
+            next()
+            
+        app.use app.router
+        app.use express.static path.join(__dirname, '..', '..', 'client')
+        app.use express.errorHandler()
+        app.set 'encoder', encoder
+        
+    app.all "/api*", require("../lib/routes/api")
+    app.all "/admin*", require("../lib/routes/admin")
     
-    start = 80
-    
-    si = setInterval(() ->
-        console.log start--
-        if start < 0 then process.exit()
-    , 1000)
+    http.createServer(app).listen app.get('port'), () ->
+      console.log("Express server listening on port " + app.get('port'))

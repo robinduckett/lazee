@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-queue= require('../lib/queue')
+queue = require('../lib/queue')
 dnode = require('dnode')
 
 server = dnode

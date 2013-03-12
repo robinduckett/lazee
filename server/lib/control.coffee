@@ -58,9 +58,10 @@ class Control extends EventEmitter
                 @emit 'error', err
 
     watch: ->
-        @query 'torrent-get',
-           fields: ["id", "name", "isFinished", "isStalled", "status", "leftUntilDone", "rateDownload", "rateUpload", "totalSize", "doneDate"]
-       , (err, res, body) =>
+        params =
+            fields: ["id", "name", "isFinished", "isStalled", "status", "leftUntilDone", "rateDownload", "rateUpload", "totalSize", "doneDate", "files", "downloadDir"]
+            
+        @query 'torrent-get', params, (err, res, body) =>
             if body and body.result is 'success'
                 torrents = body.arguments.torrents
                 names = _.pluck(torrents, 'name');

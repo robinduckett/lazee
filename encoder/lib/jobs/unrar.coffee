@@ -34,6 +34,8 @@ class Unrar
             
             @check output
             
+            @job.old_type = 'unrar'
+            
             if code isnt 0
                 @callback(stdout, null)
             else
