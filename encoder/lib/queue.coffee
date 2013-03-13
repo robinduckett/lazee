@@ -141,11 +141,13 @@ class Queue
             
     handleTask: (error, result, job) =>
         @addJob job
+        @getJob(job).hasError = false
         
         if error isnt null
             util.error "Job error:"
             console.log error.replace(/([\r\n]+)/g, "\n")
             @getJob(job).error = error
+            @getJob(job).hasError = true
         else
             job.finished = new Date()
 
@@ -167,16 +169,37 @@ class Queue
                 uuid: job.uuid
 
             if job.done is true
-
                 if doneJobs.length is allJobs.length
                     started = doneJobs[0].created
                     finished = doneJobs[doneJobs.length - 1].finished
 
+                    dbjobs = []
+
+                    h264 = _.where jobs,
+                        uuid: job.uuid
+                        done: true
+                        hasError: false
+                        type: 'encode_h264'
+
+                    webm = _.where jobs,
+                        uuid: job.uuid
+                        done: true
+                        hasError: false
+                        type: 'encode_webm'
+
+                    dbjobs = h264.concat webm
+
                     copyjob =
-                        jobs: doneJobs
+                        jobs: dbjobs
                         uuid: job.uuid
                         name: job.name
                         duration: moment.duration(0+moment(new Date(finished)).diff(moment(new Date(started)))).humanize()
+
+                    if job.hasError
+                        return
+
+                    if dbjobs.length is 0
+                        return
 
                     try
                         jobs_collection.insert copyjob, (err, result) ->
@@ -190,9 +213,6 @@ class Queue
 
                     util.log "All tasks for Job #{job.uuid} complete"
                     util.log util.format "  Total Time Taken: %s", duration
-            else                    
-                job.type = "mediator"
-                @process job
                 
                 
         

@@ -1,6 +1,8 @@
 <tr>
     <td>
-        <%= name %>
+        <%= name %><br>
+        <small><%= typeof filename == "undefined" ? type : type + ": " + filename %></small>
+
     </td>
     <% if (done == true) { %>
         <td><%- typeof duration !== "undefined" ? duration : "no time at all" %></td>

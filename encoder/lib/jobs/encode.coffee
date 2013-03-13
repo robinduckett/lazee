@@ -9,6 +9,8 @@ class Encode
     
     do: (@job, @callback) ->
 
+        delete @job.path
+
         encodeFormats = [
             "h264"
             "webm"
