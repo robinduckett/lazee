@@ -45,6 +45,7 @@ class Unrar
             job.done = false
 
             @job.queue.process job
+            @job.queue.update()
             
             if code isnt 0
                 @callback(stdout, null, @job)

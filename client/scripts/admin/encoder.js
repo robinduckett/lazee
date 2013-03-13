@@ -1,3 +1,5 @@
+var toggled = [];
+
 (function() {
     var template = {};
     
@@ -13,6 +15,20 @@
         $('#jobs').html(template.render('tasklist', {
             tasks: tasks
         }));
+
+        $('.showfiles').off();
+
+        $('.showfiles').click(function() {
+            var id = $(this).data('id');
+
+            if (toggled.indexOf(id) > -1) {
+                toggled.splice(toggled.indexOf(id), 1);
+                $('#moreinfo' + id).addClass('collapsed');
+            } else {
+                toggled.push(id);
+                $('#moreinfo' + id).removeClass('collapsed');
+            }
+        });
     }
 
 
@@ -25,7 +41,7 @@
         template.add("tasklistitem", "admin/tasklistitem.html");
 
         template.load(function() {  
-            updateJobs();      
+            updateJobs();
             
             setInterval(function() {
                 $.getJSON('/admin/encoder/jobs', function(result, xhr) {

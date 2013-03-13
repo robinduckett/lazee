@@ -5,7 +5,9 @@ dnode = require('dnode')
 
 server = dnode
     process: (job) ->
+        job.done = false
         queue.process(job)
+        queue.update()
         
     getJobs: (cb) ->
         jobs = queue.getJobs()

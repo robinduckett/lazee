@@ -1,5 +1,8 @@
+path = require('path')
+
 class Mediator
     constructor: () ->
+        @foundStuffToProcess = false
     
     do: (@job, @callback) ->
         if @job.files
@@ -8,10 +11,13 @@ class Mediator
             
         if @job.path
             @scanAndQueue @job.path
+
+        if @foundStuffToProcess is false
+            @job.done = true
+
+            @callback("Could not find any files in \"#{@job.name}\" to process", null, @job)
             
     scanAndQueue: (file) ->
-        console.log "scanning #{file}"
-
         extension = file.substring file.lastIndexOf(".")
 
         job = @job.queue.getCopyJob(@job)
@@ -32,10 +38,13 @@ class Mediator
             else
                 return
 
+        @foundStuffToProcess = true
+
         delete job.id
 
         if job.done isnt true
             @job.queue.process job
+            @job.queue.update()
 
         if @job.old_type
             @job.type = @job.old_type

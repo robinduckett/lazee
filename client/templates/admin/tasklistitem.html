@@ -2,33 +2,81 @@
     <td>
         <%= name %>
     </td>
+    <% if (done == true) { %>
+        <td><%- typeof duration !== "undefined" ? duration : "no time at all" %></td>
+    <% } else { %>
+        <td>Working...</td>
+    <% } %>
     <td>
-        <%= type %>
-    </td>
-    <td>
-        <% if (typeof done == "undefined") {%>
+
+        <% var bartext = typeof filename == "undefined" ? type : filename; %>
+        <% if (typeof error !== "undefined") { %>
+            <div class="progress progress">
+                <div class="bar bar-danger" style="width: 100%"></div>
+            </div>
+        <% } else if (done == false) {%>
             <% if (typeof progress != "undefined") {%>
-            <div class="progress progress-striped active">
-                <div class="bar bar-success" style="width: <%= Math.ceil(progress.percent) %>%"></div>
+            <div class="progress progress active">
+                <div class="bar" style="width: <%= Math.ceil(progress.percent) %>%"><%= bartext %></div>
             </div>
             <% } else { %>
                 <div class="progress progress-striped active">
-                    <div class="bar bar-warning active" style="width: 100%"></div>
+                    <div class="bar bar-warning active" style="width: 100%"><%= bartext %></div>
                 </div>
             <% } %>
         <% } else { %>
             <% if (done == true) { %>
                 <div class="progress">
-                    <div class="bar bar-success" style="width: 100%"></div>
+                    <div class="bar bar-success" style="width: 100%"><%= bartext %></div>
                 </div>
             <% } else { %>
-                <div class="progress progress-striped active">
-                    <div class="bar bar-warning active" style="width: <%= Math.ceil(progress.percent) %>%"></div>
-                </div>
+                <% if (typeof progress != "undefined") {%>
+                    <div class="progress progress-striped active">
+                        <div class="bar" style="width: <%= Math.ceil(progress.percent) %>%"><%= bartext %></div>
+                    </div>
+                <% } else { %>
+                    <div class="progress progress-striped active">
+                        <div class="bar bar-warning" style="width: 100%"><%= bartext %></div>
+                    </div>
+                <% } %>
             <% } %>
         <% } %>
     </td>
     <td width="88">
-        <button class="btn">More Info</button>
+        <button class="btn showfiles" data-id="<%= id %>">More Info</button>
+    </td>
+</tr>
+<tr class="moreinfo <%= toggled.indexOf(id) > -1 ? '' : 'collapsed' %>" id="moreinfo<%= id %>">
+    <td colspan="4">
+        <% var expose = ["uuid", "error", "stdout", "stderr", "files", "path", "currentFile", "name", "progress", "metadata", "created", "finished", "duration"]; %>
+        <% var titles = ["UUID", "Error", "Output", "Standard Error", "Files", "Path", "Current Files", "Torrent Name", "Progress", "Metadata", "Created", "Finished", "duration"]; %>
+
+        <dl>
+            <% expose.forEach(function(value, index) { %>
+                <% var val = undefined; %>
+                <% try {val = eval(value)} catch (e) {} %>
+                <% if (typeof val !== "undefined") { %>
+                    <% if (_.isString(val)) { %>
+                        <% if (val.length > 0) { %>
+                        <strong><%= titles[index] %></strong>
+                        <pre><%= val %></pre>
+                        <% } %>
+                    <% } else if (_.isArray(val)) { %>
+                        <% if (val.length > 0) { %>
+                            <strong><%= titles[index] %></strong>
+                            <ul>
+                                <li><%= val.join('</li><li>') %></li>
+                            </ul>
+                        <% } %>
+                    <% } else if (_.isObject(val)) { %>
+                        <strong><%= titles[index] %></strong>
+                        <pre><%= JSON.stringify(val, null, 2) %></pre>
+                    <% } else { %>
+                        <strong><%= titles[index] %></strong>
+                        <pre><%= val %></pre>
+                    <% } %>
+                <% } %>
+            <% }); %>
+        </dl>
     </td>
 </tr>

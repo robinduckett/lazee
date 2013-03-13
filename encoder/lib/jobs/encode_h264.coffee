@@ -12,6 +12,10 @@ class H264Encode extends Encoder
 
         @job.durationraw = "00:00:31.00"
         @job.durationsec = 31
+
+        @job.filename = @filename
+
+        @job.queue.addJob @job
         
         new Ffmpeg(
             source: @currentFile

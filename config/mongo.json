@@ -1,4 +1,4 @@
 {
-    hostname: "haxd.net",
-    database: "Lazee"
+    "host": "haxd.net",
+    "database": "Lazee"
 }

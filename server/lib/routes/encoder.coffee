@@ -26,10 +26,12 @@ module.exports =
                 created: new Date()
                 
             res.json
-                success: true
+                success: "true"
+
+            return
                 
         res.json
-            unknownMethod: true
+            unknownMethod: "true"
                         
     jobs: (req, res) ->
                 

@@ -1,13 +1,32 @@
 .table tr td {
+    font-weight: 100;
     padding: 5px;
     margin: 0;
     vertical-align: middle;
     line-height: 12pt;
 }
 
+tr.moreinfo.collapsed {
+    display: none;
+}
+
+.table tr td strong {
+    font-weight: 100;
+    display: block;
+    margin-bottom: 5px;
+}
+
 .table tr td .progress {
     position: relative;
     top: 10px;
+}
+
+.table tr td pre {
+    font-size: 8pt;
+}
+
+.table tr td ul {
+    font-size: 9pt;
 }
 
 .table thead th {

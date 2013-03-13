@@ -16,6 +16,7 @@ class Encoder
         if @job.encode_files.length > 1
             @job.encode_files.shift()
             @job.queue.process @job.queue.getCopyJob @job
+            @job.queue.process.update()
             
         @destination = path.join(__dirname, "..", "..", "..", "content", "video", @job.uuid)
         
@@ -41,8 +42,6 @@ class Encoder
         mark_seconds = new Timemark(progress.timemark).toSeconds()
 
         progress.percent = @percent = Math.ceil(mark_seconds / duration_seconds * 100)
-
-        console.log "Converting #{@filename}: #{@percent}%"
 
         @job.progress = progress
         @job.queue.addJob @job

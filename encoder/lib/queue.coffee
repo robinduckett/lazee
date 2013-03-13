@@ -1,6 +1,36 @@
 async = require('async')
 util = require('util')
 moment = require('moment')
+_ = require('underscore')
+
+mongo_config = require(__dirname + '/../../config/mongo.json')
+Mongo = require('mongodb').Db
+Server = require('mongodb').Server
+
+mongo = new Mongo(mongo_config.database, new Server(mongo_config.host, 27017,
+    auto_reconnect: true
+    poolSize: 4
+),
+    w: 0
+    native_parser: false
+)
+
+jobs_collection = null
+
+mongo.open (err, db) ->
+    if err
+        util.log "Unable to open database"
+        console.log err
+    else
+        util.log "Connected to mongo database"
+
+        db.collection "jobs", (err, collection) ->
+            if err
+                util.log "Unable to open collection"
+                console.log err
+            else
+                util.log "Opened jobs collection"
+                jobs_collection = collection
 
 capitalize = (str) ->
   str.charAt(0).toUpperCase() + str.slice(1)
@@ -47,6 +77,23 @@ class Queue
 
         jobs
 
+    getJobsArray: ->
+        jobs = []
+
+        for own jobkey, jobvalue of @jobs
+            copyjob = {}
+
+            for own key, value of jobvalue
+                copyjob[key] = value
+
+            delete copyjob.queue
+
+            copyjob.oldjobkey = jobkey
+
+            jobs.push(copyjob)
+
+        jobs
+
     getCopyJob: (job) ->
         cjob = @getJob job
         delete cjob.queue
@@ -83,6 +130,8 @@ class Queue
             Task = require('./jobs/' + job.type)
             
             task = new Task();
+
+            job.created = new Date();
             
             task.do job, @handleTask
         catch e
@@ -99,15 +148,48 @@ class Queue
             @getJob(job).error = error
         else
             job.finished = new Date()
-            
-            duration = moment.duration(0+moment(new Date(job.finished)).diff(moment(new Date(job.created)))).humanize();
-                    
-            util.log util.format "Job %s complete:", capitalize(job.type)
-            util.log util.format "  Job Id: %s", job.id
+
+            duration = moment.duration(0+moment(new Date(job.finished)).diff(moment(new Date(job.created)))).humanize()
+            job.duration = duration
+
+            util.log util.format "Job %s:%s complete:", job.uuid, capitalize(job.type)
             util.log util.format "  Time Taken: %s", duration
-                
+
+            @addJob job
+
+            jobs = @getJobsArray()
+
+            doneJobs = _.where jobs,
+                uuid: job.uuid
+                done: true
+
+            allJobs = _.where jobs,
+                uuid: job.uuid
+
             if job.done is true
-                util.log "All tasks for Job #{job.id} complete"
+
+                if doneJobs.length is allJobs.length
+                    started = doneJobs[0].created
+                    finished = doneJobs[doneJobs.length - 1].finished
+
+                    copyjob =
+                        jobs: doneJobs
+                        uuid: job.uuid
+                        name: job.name
+                        duration: moment.duration(0+moment(new Date(finished)).diff(moment(new Date(started)))).humanize()
+
+                    try
+                        jobs_collection.insert copyjob, (err, result) ->
+                            if err
+                                util.log "Unable to save job to database"
+                            else
+                                util.log "Job saved successfully"
+                    catch e
+                        util.error e
+                        util.log "Database Error"
+
+                    util.log "All tasks for Job #{job.uuid} complete"
+                    util.log util.format "  Total Time Taken: %s", duration
             else                    
                 job.type = "mediator"
                 @process job

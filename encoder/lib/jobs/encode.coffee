@@ -22,6 +22,7 @@ class Encode
             job.type = "encode_#{format}"
 
             @job.queue.process job
+            @job.queue.update()
         
         @job.done = true
         @callback(null, null, @job)

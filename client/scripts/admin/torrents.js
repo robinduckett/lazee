@@ -47,13 +47,15 @@ function showMain() {
         });
         
         if (torrent.id === id) {
-            $.post("/admin/encoder/jobs/create", {name: torrent.name, files: files}, function(data) {
-                var ret = JSON.parse(data);
-                
-                if (ret.success) {
+            console.log('posting');
+
+            $.post("/admin/encoder/jobs/create", {name: torrent.name, files: files}, function(data, status, xhr) {
+                if (data.success) {
                     location.href = '/admin/encoder';
+                } else {
+                    $('.encode').addClass('danger');
                 }
-            });
+            }, 'json');
         }
     });
     
