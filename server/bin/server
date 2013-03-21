@@ -4,6 +4,17 @@ dnode = require('dnode')
 express = require('express')
 http = require('http')
 path = require('path')
+_ = require('lodash')
+partials = require('express-partials')
+global.util = util = require('util')
+
+mongo_config = require(__dirname + '/../../config/mongo.json')
+Mongo = require('mongodb').Db
+Server = require('mongodb').Server
+transmission = require(path.join(__dirname, '..', '..', 'config', 'transmission.json'))
+transmission_session_id = ""
+
+qs = require 'querystring'
 
 d = dnode.connect(5001)
 
@@ -14,15 +25,21 @@ d.on 'remote', (remote) ->
     app.configure () ->
         app.set 'port', 4999
         app.set 'views', path.join(__dirname, '..', 'views')
-        app.set 'view engine', 'ejs'
+        app.engine 'html', require('ejs').renderFile
+        app.set 'view engine', 'html'
         app.set 'layout', 'layout'
-        app.use require('express-partials')()
+        app.use partials()
+
+        partials.register "html", require('ejs').renderFile
+
         app.use require 'express-blocks'
         app.use express.favicon(path.join(__dirname, '..', '..', 'client', 'images', 'favicon.ico'))
         app.use express.bodyParser()
         app.use express.cookieParser()
         app.use express.session(secret: 'test')
         app.use express.methodOverride()
+
+        app.set 'encoder', encoder
         
         app.use (req, res, next) ->
             res.locals.session = req.session
@@ -30,11 +47,63 @@ d.on 'remote', (remote) ->
             
         app.use app.router
         app.use express["static"] path.join(__dirname, '..', '..', 'client')
+
         app.use express.errorHandler()
-        app.set 'encoder', encoder
-        
-    app.all "/api*", require("../lib/routes/api")
-    app.all "/admin*", require("../lib/routes/admin")
+
+        app.use (req, res, next) ->
+            res.status 404
+
+            if req.accepts('text/html')
+                res.render '404', url: req.url
+                return
+
+            if req.accepts 'json'
+                res.send error: 'Not found'
+                return
+
+            res.type('txt').send('Not found')
+
+    route = require("../lib/routes")
+
+    route app
+
+    httpProxy = require 'http-proxy'
+    proxy = new httpProxy.RoutingProxy()
+
+    app.all "/transmission/*", (req, res, next) ->
+        req.headers['Authorization'] = "Basic " + new Buffer("#{transmission.username}:#{transmission.password}").toString('base64')
+
+        proxy.proxyRequest req, res,
+            host: transmission.host
+            port: transmission.port
     
     http.createServer(app).listen app.get('port'), () ->
-      console.log("Express server listening on port " + app.get('port'))
+        util.log("Express server listening on port " + app.get('port'))
+
+        mongo = new Mongo(mongo_config.database, new Server(mongo_config.host, 27017,
+            auto_reconnect: true
+            poolSize: 4
+        ),
+            w: 0
+            native_parser: false
+        )
+
+        mongo.open (err, db) ->
+            if err
+                util.log "Unable to open database"
+                console.log err
+            else
+                util.log "Connected to mongo database"
+
+                collections = {}
+
+                for mongo_collection in ['jobs', 'users', 'content', 'news']
+                    db.collection mongo_collection, (err, collection) ->
+                        if err
+                            util.log "Unable to open collection"
+                            console.log err
+                        else
+                            util.log "Opened #{mongo_collection} collection"
+                            collections[mongo_collection] = collection
+
+                app.set "collections", collections

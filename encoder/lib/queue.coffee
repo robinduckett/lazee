@@ -104,6 +104,19 @@ class Queue
 
         cjob.queue = @
         rjob
+
+    removeJobByUuid: (uuid) ->
+        found = []
+
+        for own key, value of @jobs
+            if value.uuid is uuid
+                found.push key
+
+        for id in found
+            delte @jobs[id]
+
+        found.length
+
         
     process: (job) ->    
         if typeof job.id is "undefined"
@@ -193,6 +206,7 @@ class Queue
                         jobs: dbjobs
                         uuid: job.uuid
                         name: job.name
+                        created: new Date()
                         duration: moment.duration(0+moment(new Date(finished)).diff(moment(new Date(started)))).humanize()
 
                     if job.hasError
@@ -202,11 +216,12 @@ class Queue
                         return
 
                     try
-                        jobs_collection.insert copyjob, (err, result) ->
+                        jobs_collection.insert copyjob, (err, result) =>
                             if err
                                 util.log "Unable to save job to database"
                             else
                                 util.log "Job saved successfully"
+                                @removeJobByUuid copyjob.uuid
                     catch e
                         util.error e
                         util.log "Database Error"

@@ -128,14 +128,14 @@ class Control extends EventEmitter
 
         request requestOptions, (err, res, body) =>
             if err
-                console.log "TorrentControl: " + err.toString()
+                util.log "TorrentControl: " + err.toString()
             else
                 if res.headers['x-transmission-session-id']
                     @sessionId = res.headers['x-transmission-session-id']
 
                 switch res.statusCode
                     when 409
-                        console.log 'Retrieving RPC Session ID'
+                        util.log 'Retrieving RPC Session ID'
                         @query method, args, callback
                     when 401 then throw new Error "Invalid username / password"
                     else

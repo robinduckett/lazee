@@ -22,8 +22,14 @@
 
             <div id="content">
                 <% if (session.error) { %>
-                    <div class="alert error">
-                          <strong>Error</strong> <%= session.error %>
+                    <div class="alert alert-error error">
+                          <strong><%= session.error %></strong>
+                    </div>
+                <% } %>
+
+                <% if (session.message) { %>
+                    <div class="alert">
+                          <strong><%= session.message %></strong>
                     </div>
                 <% } %>
                 <%- body %>

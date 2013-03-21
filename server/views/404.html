@@ -1,0 +1,15 @@
+<%- block('title', ' Error') %>
+
+<% if (url.indexOf('admin') > -1) { %>
+    <legend>Administration <small> - Error</small></legend>
+
+        <% active = 'home' %>
+        <% include admin/nav.html %>
+<% } %>
+<p class="alert alert-error">
+    <strong>Error</strong> requesting <%= url %>
+</p>
+
+<p class="fourzerofour">
+    Sorry, the page you requested can't be found. It's possible the link is malformed, or the site is broken in a very serious way. Let me know.
+</p>

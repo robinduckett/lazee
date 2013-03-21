@@ -10,8 +10,8 @@ class H264Encode extends Encoder
     encode: () =>
         @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".mp4"
 
-        @job.durationraw = "00:00:31.00"
-        @job.durationsec = 31
+#        @job.durationraw = "00:00:31.00"
+#        @job.durationsec = 31
 
         @job.filename = @filename
 
@@ -26,7 +26,7 @@ class H264Encode extends Encoder
          .withAudioBitrate("192k")
          .withAudioChannels(2)
          .toFormat("mp4")
-         .addOption("-t", "00:00:31")
+         .addOption('-threads', '0')
          .addOption("-ar", "48000")
          .addOption("-vpre", "baseline")
          .onProgress(@progress)

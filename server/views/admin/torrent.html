@@ -6,7 +6,7 @@
 <legend>Administration <small> - Torrents</small></legend>
 
 <% active = 'torrents' %>
-<% include nav %>
+<% include nav.html %>
 
 <input type="hidden" id="transmission_url" value="<%= transmission %>">
 <script type="application/json" id="torrents_json"><%- JSON.stringify(torrents) %></script>

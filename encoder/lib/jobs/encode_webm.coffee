@@ -10,9 +10,6 @@ class WebMEncode extends Encoder
     encode: () =>        
         @filename = path.basename(@currentFile, path.extname(@currentFile)) + ".webm"
 
-        @job.durationraw = "00:00:05.00"
-        @job.durationsec = 5
-
         @job.filename = @filename
 
         @job.queue.addJob @job
@@ -26,7 +23,7 @@ class WebMEncode extends Encoder
          .withAudioBitrate("192k")
          .withAudioChannels(2)
          .toFormat("webm")
-         .addOption("-t", "00:00:05")
+         .addOption('-threads', '16')
          .addOption("-ar", "48000")
          .onProgress(@progress)
          .saveToFile(path.join(@destination, @filename), @saveFileCallback)
