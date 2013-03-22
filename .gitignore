@@ -4,4 +4,4 @@ node_modules/*
 tmp/
 content/
 
-index.html
+/index.html
