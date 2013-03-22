@@ -1,4 +1,4 @@
-#!/usr/bin/env coffee --nodejs --debug
+#!/usr/bin/env coffee
 
 queue = require('../lib/queue')
 dnode = require('dnode')

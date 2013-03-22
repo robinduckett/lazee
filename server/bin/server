@@ -1,4 +1,4 @@
-#!/usr/bin/env coffee --nodejs --debug=5959
+#!/usr/bin/env coffee
 
 dnode = require('dnode')
 express = require('express')
