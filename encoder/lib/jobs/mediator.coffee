@@ -23,7 +23,7 @@ class Mediator
         job = @job.queue.getCopyJob(@job)
                 
         switch extension
-            when ".avi", ".mkv", ".ogg", ".webm", ".flv"
+            when ".avi", ".mkv", ".ogg", ".webm", ".flv", ".mp4"
                 if !job.encode_files then job.encode_files = []
                 
                 if job.encode_files.indexOf(file) is -1
