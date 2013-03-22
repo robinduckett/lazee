@@ -28,7 +28,7 @@ class H264Encode extends Encoder
          .addOption("-b:a", "192k")
          .addOption('-threads', '0')
          .addOption("-ar", "48000")
-         .addOption("-preset", "baseline")
+         .addOption("-profile", "baseline")
          .onProgress(@progress)
          .saveToFile(path.join(@destination, @filename), @saveFileCallback)
         
