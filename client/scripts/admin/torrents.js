@@ -49,7 +49,7 @@ function showMain() {
         if (torrent.id === id) {
             console.log('posting');
 
-            $.post("/admin/encoder/jobs/create", {name: torrent.name, files: files}, function(data, status, xhr) {
+            $.post("/admin/encoder/create", {name: torrent.name, files: files}, function(data, status, xhr) {
                 if (data.success) {
                     location.href = '/admin/encoder';
                 } else {
