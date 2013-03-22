@@ -18,6 +18,8 @@ As root:
     chown node:node /var/log/lazee*
     chmod u+rw /var/log/lazee*
 
+And then configure the lazee source tree:
+
     git clone git@bitbucket.org:haxd/lazee.git /home/node/lazee
 
     pushd /home/node/lazee
@@ -33,6 +35,12 @@ As root:
     chown -R node:node /home/node/lazee
     chmod u+x server/bin/server
     chmod u+x encoder/bin/encoder
+
+    chmod a+x /home/node/lazee/config/scripts/start-lazee
+    chmod a+x /home/node/lazee/config/scripts/stop-lazee
+
+    ln -s /home/node/lazee/config/scripts/start-lazee /usr/bin/start-lazee
+    ln -s /home/node/lazee/config/scripts/stop-lazee /usr/bin/stop-lazee
 
     popd
 
