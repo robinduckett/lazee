@@ -20,15 +20,15 @@ class H264Encode extends Encoder
         new Ffmpeg(
             source: @currentFile
             timeout: 10800
-        ).withVideoBitrate("700k")
-         .withVideoCodec("libx264")
+        ).withVideoCodec("libx264")
          .withAudioCodec("libfaac")
-         .withAudioBitrate("192k")
          .withAudioChannels(2)
          .toFormat("mp4")
+         .addOption("-b:v", "700k")
+         .addOption("-b:a", "192k")
          .addOption('-threads', '0')
          .addOption("-ar", "48000")
-         .addOption("-vpre", "baseline")
+         .addOption("-preset", "baseline")
          .onProgress(@progress)
          .saveToFile(path.join(@destination, @filename), @saveFileCallback)
         

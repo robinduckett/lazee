@@ -61,11 +61,9 @@ To start, stop and restart the service respectively. You MUST run the encoder se
 
     sudo apt-get install monit
 
-Create or modify the file `/etc/monit/conf.d/lazee`
-
 Copy the files in `/home/node/lazee/config/monit` to `/etc/monit/conf.d/`
 
-Modify the monit configuration file and add the following to the end of the file,
+Modify the monit configuration file (`/etc/monit/monitrc`) and add the following to the end of the file,
 before the line "include /etc/monit/conf.d/*"
 
     set httpd port 2812 and
