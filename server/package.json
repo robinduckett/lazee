@@ -12,7 +12,8 @@
     "request": "~2.14.0",
     "lodash": "~1.0.1",
     "http-proxy": "~0.9.1",
-    "mongodb": "~1.2.14"
+    "mongodb": "~1.2.14",
+    "uuid": "~1.4.1"
   },
   "devDependencies": {},
   "scripts": {

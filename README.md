@@ -8,7 +8,15 @@ A media encoding / server for sirs.
 
 Make sure Transmission / transmission-daemon is running.
 
+As root:
+
     useradd node
+
+    touch /var/log/lazee-encoder.log
+    touch /var/log/lazee-server.log
+
+    chown node:node /var/log/lazee*
+    chmod u+rw /var/log/lazee*
 
     git clone git@bitbucket.org:haxd/lazee.git /home/node/lazee
 
@@ -32,27 +40,20 @@ Make sure Transmission / transmission-daemon is running.
 
 ### Upstart script
 
-Create a file called `lazee.conf` in `/etc/init/` as the following:
+Copy the files in `/home/node/lazee/config/upstart` to `/etc/init/`
 
-    # /etc/init/lazee.conf
-    description "Lazee Service"
-    author "Robin Duckett"
+You should now be able to run the following commands
 
-    start on (local-filesystems and net-device-up IFACE=eth0)
-    stop on shutdown
+    start lazee-encoder
+    start lazee-server
 
-    setuid node
-    setgid node
+    stop lazee-encoder
+    stop lazee-server
 
-    script
-        cd /home/lazee
+    restart lazee-encoder
+    restart lazee-server
 
-        exec encoder/bin/encoder 2>&1 >> /var/log/lazee-encoder.log
-        exec server/bin/server 2>&1 >> /var/log/lazee-server.log
-    end script
-
-You should now be able to run the commands `start lazee`, `stop lazee` and `restart lazee` to
-start, stop and restart the lazee service.
+To start, stop and restart the service respectively. You MUST run the encoder service BEFORE the server.
 
 ### Monit
 
@@ -62,16 +63,9 @@ start, stop and restart the lazee service.
 
 Create or modify the file `/etc/monit/conf.d/lazee`
 
-    # /etc/monit/conf.d/lazee
-    check host lazee with address 127.0.0.1
-        start program = "/sbin/start lazee"
-        stop program = "/sbin/stop lazee"
-        if failed port 4999 protocol HTTP
-            request /ping
-            with timeout 5 seconds
-            then restart
+Copy the files in `/home/node/lazee/config/monit` to `/etc/monit/conf.d/`
 
-Modify the monit conifguration file and add the following to the end of the file,
+Modify the monit configuration file and add the following to the end of the file,
 before the line "include /etc/monit/conf.d/*"
 
     set httpd port 2812 and
@@ -112,3 +106,6 @@ Visit the web service to check if it's running properly on [http://haxd.net:2812
     chmod u+x encoder/bin/encoder
 
     popd
+
+    restart lazee-encoder
+    restart lazee-server
