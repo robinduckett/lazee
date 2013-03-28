@@ -9,12 +9,16 @@
 } %>
 
 <tr id="torrent<%= id %>">
-    <td><%= name.replace(/\.|_/ig, ' ') %></td>
+    <td><%= new Shapeshift(name).parse().toString() %></td>
     <td><%= readableFileSize(rateDownload) %>/s</td>
     <td><%= readableFileSize(totalSize - leftUntilDone) %></td>
     <td><%= leftUntilDone > 0 ? 'Downloading' : 'Downloaded' %></td>
     <td><%= readableFileSize(totalSize) %></td>
     <td><button class="btn showfiles" data-torrentid="<%= id %>">Show files</button></td>
-    <td><button class="btn encode" data-torrentid="<%= id %>">Encode</button></td>
+    <% if (leftUntilDone <= 0) { %>
+        <td><button class="btn encode" data-torrentid="<%= id %>">Encode</button></td>
+    <% } else { %>
+        <td><button class="btn" disabled=disabled>Encode</button></td>
+    <% } %>
 </tr>
 <tr id="fileList<%= id %>" class="fileList <%= toggled.indexOf(id) > -1 ? '' : 'collapsed' %>"><td colspan="7"><%= fileList %></td></tr>

@@ -113,7 +113,7 @@ class Queue
                 found.push key
 
         for id in found
-            delte @jobs[id]
+            delete @jobs[id]
 
         found.length
 
