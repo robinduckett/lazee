@@ -151,7 +151,21 @@ class Queue
             job.error = e
             util.error "Job error: " + e
             util.error e.stack
-            
+
+    checkFinished: (uuid) ->
+        jobs = @getJobsArray()
+
+        unfinished = _.where jobs,
+            uuid: uuid
+            done: false
+
+        if unfinished.length is 0
+            @removeJobByUuid uuid
+        else
+            setTimeout () =>
+                @checkFinished(uuid, jobs)
+            , 5000
+
     handleTask: (error, result, job) =>
         @addJob job
         @getJob(job).hasError = false
@@ -216,12 +230,16 @@ class Queue
                         return
 
                     try
+                        @checkFinished job.uuid
+
                         jobs_collection.insert copyjob, (err, result) =>
                             if err
                                 util.log "Unable to save job to database"
                             else
                                 util.log "Job saved successfully"
-                                @removeJobByUuid copyjob.uuid
+
+
+
                     catch e
                         util.error e
                         util.log "Database Error"

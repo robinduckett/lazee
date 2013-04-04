@@ -1,0 +1,31 @@
+<%- block('title', ' Administration') %>
+
+<legend>Administration <small> - Content</small></legend>
+
+<% active = 'content' %>
+<% include nav.html %>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jobs</th><th>Stuff</th>
+        </tr>
+    </thead>
+    <% jobs.forEach(function(job) { %>
+        <tr>
+            <td>
+                <ul>
+                    <% job.jobs.forEach(function(j) { %>
+                        <li><%= j.type %></li>
+                    <% }); %>
+                </ul>
+            </td>
+
+            <td>
+
+                    <pre><%= JSON.stringify(job, null, 4) %></pre>
+
+            </td>
+        </tr>
+    <% }); %>
+</table>

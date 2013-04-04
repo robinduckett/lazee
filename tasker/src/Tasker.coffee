@@ -16,7 +16,8 @@ module.exports = class Tasker
     if @jobs[job.uuid]
       if not @jobs[job.uuid].subjobs
         @jobs[job.uuid].subjobs = []
-
+    
+      job.subjob = true
       @jobs[job.uuid].subjobs.push job
 
     else
@@ -25,7 +26,7 @@ module.exports = class Tasker
   enqueue: (job) ->
     if @queue.length < @queue_limit and _.size(@jobs) > 0
       job.enqueued = true
-      job.started = new Date()
+      job.start()
 
       @queue.push job
     else
