@@ -7,3 +7,4 @@ tmp/
 content/
 
 /index.html
+config/transmission.json
