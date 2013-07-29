@@ -1,6 +1,6 @@
 #
 # Transmission Control Class for Node.js
-# @author Robin Duckett <rduckett@xumo.com>
+# @author Robin Duckett <robinduckett@gmail.com>
 #
 
 request = require 'request'
